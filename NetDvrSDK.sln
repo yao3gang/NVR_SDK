@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ctrlprotocol", "ctrlprotocol\prjw32\ctrlprotocol.vcproj", "{373C214E-A6CD-4473-AD8E-41C42E87A563}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "custommp4", "custommp4\prjw32\custommp4.vcproj", "{828DF93C-89CB-45ED-AFBC-F54B8D9DF78C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{373C214E-A6CD-4473-AD8E-41C42E87A563}.Debug|Win32.ActiveCfg = Debug|Win32
+		{373C214E-A6CD-4473-AD8E-41C42E87A563}.Debug|Win32.Build.0 = Debug|Win32
+		{373C214E-A6CD-4473-AD8E-41C42E87A563}.Release|Win32.ActiveCfg = Release|Win32
+		{373C214E-A6CD-4473-AD8E-41C42E87A563}.Release|Win32.Build.0 = Release|Win32
+		{828DF93C-89CB-45ED-AFBC-F54B8D9DF78C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{828DF93C-89CB-45ED-AFBC-F54B8D9DF78C}.Debug|Win32.Build.0 = Debug|Win32
+		{828DF93C-89CB-45ED-AFBC-F54B8D9DF78C}.Release|Win32.ActiveCfg = Release|Win32
+		{828DF93C-89CB-45ED-AFBC-F54B8D9DF78C}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,353 @@
+20110428
+FILELIB TL_OpenFile接口增加writemode选项，TL_FILE_WRITEWITHBUF时，填入存放视频帧的buf地址及buf长度
+
+20110301
+修改龙安视NETDVR_LASServer_t结构体sn和productcode长度
+
+20110222
+加入检查nRealPlayHandle和nPlayBackHandle是否合法功能，如果用户向SDK传入一个非法Handle会返回NETDVR_ERR_PARAM错误值
+
+20110128
+接口全部改为stdcall调用,解决9508D1会出现32字节的IDR帧解不了的问题
+
+20101230
+修改断线时开启预览内存泄露问题
+
+20101228
+修改按时间下载创建文件名回调函数定义，NETDVR_TimeDLfilename去掉了要保存的文件名filename，回调函数增加了形参s_save_filename
+
+20101218
+接收码流优化
+反复打开访问内存出错问题
+
+20101215
+NETDVR_DeviceInfo_t结构体中的reserved[58]改为reserved[16]
+提升版本号到0.2.3.7
+
+20101214
+打开声音后，关闭声音崩溃
+反复打开关闭图像后，会有图像打不开的现象
+
++增加报警相关接口
+//设置报警输出值
+int NETDVR_setAlarmOutVal(int Handle, const struct NETDVR_AlarmVal_t *p_para);
+//获取报警输入值
+int NETDVR_getAlarmInVal( int Handle, unsigned char alarm_in_id,struct NETDVR_AlarmVal_t * p_para);
+
+20101204
+同步一些接口
+//获得预置点列表
+int NETDVR_getPresetList(int Handle, unsigned char chn, struct NETDVR_PresetList_t* pList);
+
+//添加预置点(带名称)
+int NETDVR_AddPresetByName(int Handle, const struct NETDVR_PresetName_t *p_para);
+
+//获得PTZ速度
+int NETDVR_getPTZRate(int Handle, unsigned char chn, struct NETDVR_PTZRate_t* p_para);
+
+//重置画面调节参数
+int NETDVR_resetPicAdjust(int Handle, const struct NETDVR_Reset_Picadjust_t *pPara);
+
+//获得帧率列表
+int NETDVR_getFrameRateList(int Handle, unsigned char chn, unsigned char vidoetype, NETDVR_Framerate_list_t* p_para);
+
+//获得分辨率列表
+int NETDVR_getVideoResoluList(int Handle, unsigned char chn, unsigned char vidoetype, NETDVR_VideoResolu_list_t* p_para);
+
+//获得系统支持最大遮盖数
+int NETDVR_getMaxIMGMaskNum(int Handle,  unsigned char* pNum);
+
+//南瑞服务器
+int NETDVR_setNRServer(int Handle, const struct NETDVR_NRServer_t *p_para);
+int NETDVR_getNRServer( int Handle, NETDVR_NRServer_t * p_para);
+
+20101124
+解码回调为空时不解码
+解决频繁开关音频导致崩溃的问题
+
+20101117
+修正子码流打开问题
+
+20100809
+此版本有如下改动
+
+*修改新的预览和回放接口调用方式，不再限制打开数量
++新增如下接口
+// 实时预览
+struct RealPlayClientInfo_t
+{
+	unsigned char rcv_chn;		//预览通道 0开始
+	unsigned char streamtype; //0 main stream, 1 substream
+	pFrameCallBack	pEncFrameCBFunc;	//解码数据回调
+	unsigned int	dwEncFrameContent;	//解码数据回调上下文
+	pDecFrameCallBack	pDecFrameCBFunc;	//编码数据回调
+	unsigned int	dwDecFrameContent;		//编码数据回调上下文
+};
+
+注意：预览默认是要解码的，如果不希望调用解码，请通过NETDVR_SetVideoDecFlag设置
+
+// 开始&停止预览
+int NETDVR_StartRealPlay(int Handle, const struct RealPlayClientInfo_t* pClientinfo, int* pRealPlayHandle);
+参数:pRealPlayHandle-返回的预览句柄，用来控制预览，音频，解码，抓图，客户端图像
+
+int NETDVR_StopRealPlay(int nRealPlayHandle);
+//停止预览
+
+//控制是否解码
+int NETDVR_SetVideoDecFlag(int nRealPlayHandle, unsigned char bDec);
+
+//控制音频
+int NETDVR_OpenRealAudio(int nRealPlayHandle);
+开始音频
+
+int NETDVR_CloseRealAudio(int nRealPlayHandle);
+结束音频
+
+int NETDVR_MuteRealAudio(int nRealPlayHandle, bool bMute);
+设备是否静音
+
+// 回放
+struct PlayBackClientInfo_t
+{
+	unsigned char sendmode;	//0:按照帧实际时间间隔发送  1:无时间间隔直接发送
+	pFrameCallBack	pEncFrameCBFunc;	//获得编码帧
+	unsigned int	dwEncFrameContent;
+	pDecFrameCallBack	pDecFrameCBFunc; //获得解码帧
+	unsigned int	dwDecFrameContent;
+	PFUN_PROGRESS_T	pProgressCBFunc;	//回放进度回调
+	unsigned int	dwProgressContent;
+	PFUN_MSG_T		pPlayOverCBFunc; //回放结束回调
+	unsigned int	dwPlayOverContent;
+};
+
+注意：回放只在pDecFrameCBFunc不为空时才解码
+
+//开始 &停止回放
+int NETDVR_startPlayByFile(int Handle,  const struct NETDVR_recFileInfo_t *pFileInfo, const struct PlayBackClientInfo_t* pClientInfo, int* pPlayHandle);
+参数:pPlayHandle-返回的回放句柄，用来控制回放
+
+int NETDVR_startPlayByTime(int Handle,  const struct NETDVR_TimePlayCond_t *pTimePlayInfo, const struct PlayBackClientInfo_t* pClientInfo, int* pPlayHandle);
+参数:pPlayHandle-返回的回放句柄，用来控制回放
+
+int NETDVR_stopPlayBack(int nPlayBackHandle);
+停止回放
+
+
+-去掉如下接口:
+	NETDVR_openVideoReciever
+	NETDVR_closeVideoReciever
+	NETDVR_createVideoDecoder
+	NETDVR_destroyVideoDecoder
+	NETDVR_setDecoderFMT
+	NETDVR_startVideoSend
+	NETDVR_stopVideoSend
+	NETDVR_openAudioReciever
+	NETDVR_regDecAudioFrameCB
+	NETDVR_closeAudioReciever
+	NETDVR_mutePreViewAudio
+	NETDVR_startAudioSend
+	NETDVR_stopAudioSen
+	NETDVR_openSubVideoReciever
+	NETDVR_closeSubVideoReciever
+	NETDVR_setSubDecoderFMT
+	NETDVR_createSubVideoDecoder
+	NETDVR_destroySubVideoDecoder
+	NETDVR_startSubVideoSend
+	NETDVR_stopSubVideoSend
+	NETDVR_startSubRecord
+	NETDVR_stopSubRecord
+	NETDVR_setSubRecordCB
+	NETDVR_setSubRecordFileNameCB
+	NETDVR_Subsnapshot
+	NETDVR_setVideoDecFlag
+	NETDVR_setSubVideoDecFlag
+	NETDVR_startRecord2
+	NETDVR_stopRecord2
+	NETDVR_setRecord2CB
+	NETDVR_setRecord2FileNameCB
+	NETDVR_GetRecord2State
+	NETDVR_regCBMsgGetFileFrameOver
+	NETDVR_regCBMsgGetFileFrameProgress
+	NETDVR_GetFileFrameSeek
+	NETDVR_startGetFileFrameByFile
+	NETDVR_stopGetFileFrameByFile
+
+=========================================================================
+×××××××××××××××××××××××××××××××××××××
+=========================================================================
+
+20100714
+安防qq信息
++增加如下接口
+
+	struct NETDVR_LASServer_t
+	{
+		unsigned char sn[32]; //序列号
+		unsigned char productcode[14];//产品条形码
+		unsigned char macaddr[18];//mac地址
+		unsigned char reserved[16];//预留
+	};
+
+	int NETDVR_setLASAFQQInfo(int Handle, const struct NETDVR_LASServer_t *pLASServ);
+	设置安防qq信息
+	int NETDVR_getLASAFQQInfo(int Handle, struct NETDVR_LASServer_t *pLASServ);
+	获得安防qq信息
+
+20100514
+*fix一处会引起死锁的bug
+*fix一处可能引起退出时崩溃的bug
+
+20100330
+*解决上一个版本重要bug:开启关闭预览时，有时会错误的返回NETDVR_ERR_BUSY，回放下载都有影响，请更新。
+*fix一个在退出时会崩溃的bug。
+*减少退出时花费的时间。
+
+20100327
++增加重连功能相关接口
+当网络断开时，如果SDK设置开启重连，则每隔一段时间会尝试重连，并将消息返回回调函数
+针对下列连接重连：预览（视频，音频）, VOIP, 透明通道，信令连接。
+回放，升级，下载的连接不重连。
+如果外部程序在断开后destroy设备，则此设备不进行重连。
+如果外部程序在断开后关闭连接，则关闭的连接不进行重连。
+
+//重连消息回调
+enum RECONNMSG{RECONN_BEGIN, RECONN_SUCESS, RECONN_FAILED};
+typedef void (*pCBReconnMsg)(enum RECONNMSG msg, unsigned int dwContent);
+//设置全局重连时间，单位毫秒。默认10s
+int NETDVR_setReconnectTime(unsigned int millisecond);
+//注册重连消息回调
+int NETDVR_regCBMsgReconnect(int Handle, pCBReconnMsg p_cb_func, unsigned int dwContent);
+//设置重连标记 1 开启重连 2 关闭重连 。默认不重连
+int NETDVR_setReconnectFlag(int Handle, unsigned char reconflag);
+
+20100318
+*fix一些接口打开两次后会出现无法关闭的bug
+
+20100318
+*fix两处可能引起bug的地方
+
+20100315
+*fix透明通道的一个bug
+*NETDVR_GetComParam参数修改
+int NETDVR_GetComParam(int Handle, unsigned char serialport, struct NETDVR_ComParam_t *p_para);
+//serialport 1－232串口；2－485串口 
+
+20100312
+*fix 某些极端情况下发送的bug
++增加透明通道接口 （使用见mfcdemo的OnSerialport()）
+
+注册回调函数，接受串口返回信息
+typedef void(*pSerialDataCallBack)(int lSerialPort, unsigned char bySerialChannel, char *pRecvDataBuffer, unsigned int dwBufSize, unsigned int dwContent);
+
+开始透明通道
+//lSerialPort 1－232串口；2－485串口 
+int NETDVR_SerialStart(int Handle, int lSerialPort,	pSerialDataCallBack cbSerialDataCallBack, unsigned int dwContent);
+
+发送数据
+//byChannel, 使用485串口时有效，从1开始；232串口作为透明通道时该值设置为0 
+//dwBufSize 最大值4096
+int NETDVR_SerialSend(int Handle, int lSerialPort, unsigned char byChannel, char* pSendBuf, unsigned int dwBufSize);
+
+停止透明通道
+int NETDVR_SerialStop(int Handle, int lSerialPort);
+
+
+20100311
+*解决一个退出时引起内存泄露的bug
++增加按帧下载接口
+//注册下载结束回调
+int NETDVR_regCBMsgGetFileFrameOver(int Handle, int get_index, PFUN_MSG_T p_cb_func, unsigned int dwContent);
+
+//注册下载进度回调
+int NETDVR_regCBMsgGetFileFrameProgress(int Handle, int get_index, PFUN_PROGRESS_T p_cb_func, unsigned int dwContent);
+
+//seek到某时刻
+int NETDVR_GetFileFrameSeek(int Handle, int get_index, unsigned int new_time);
+
+//开始下载
+int NETDVR_startGetFileFrameByFile(int Handle,  int get_index, const struct NETDVR_recFileInfo_t *pFileInfo, pFrameCallBack pCBFun, unsigned int dwContent);
+
+//停止下载
+int NETDVR_stopGetFileFrameByFile(int Handle, int get_index);
+
+20100223
++增加获得回放编码码流接口
+int NETDVR_regCBGetPlayEncFrame(int Handle, int player_index, pFrameCallBack pCBFun, unsigned int dwContent);
+注册回调函数获得码流
+
+
+20100121
++增加报警上传相关接口
+
+	struct NETDVR_AlarmUploadState_t
+	{
+		//0-信号量报警,1-硬盘满,2-信号丢失,3－移动侦测,4－硬盘未格式化,
+		//5-读写硬盘出错,6-遮挡报警,7-制式不匹配, 8-非法访问
+		unsigned char	type;		
+		unsigned char	state;			//1报警 2恢复
+		unsigned char	id;				//通道,硬盘号,报警输入号,取决于type 
+		unsigned short	reserved1;		//预留
+		unsigned int	reserved2;		//预留	
+	};
+
+	typedef void (*PFUN_ALARMSTATE_T)(struct NETDVR_AlarmUploadState_t alarmstate, unsigned int dwContent);
+	说明:报警上传信息回调函数类型,报警发生时,如果请求过,会将报警信息通过回调上传.
+
+	int NETDVR_regCBAlarmState(int Handle, PFUN_ALARMSTATE_T p_cb_func, unsigned int dwContent);
+	说明:注册报警上传回调函数,在NETDVR_SetAlarmUpload之前调用
+
+	int NETDVR_SetAlarmUpload(int Handle, const unsigned char uploadflag);
+	说明:设置报警上传标记.uploadflag: 0,不发送,即主机不上传报警信息,也无法通过回调获取.  1.发送,设置后当发生报警时,主机会上传报警信息.
+
++增加局域网搜索设备接口
+	typedef void (*PFUN_SearchDevice_CB)(struct NETDVR_DeviceInfo_t dev, void* pContext);
+	设备搜索接口回调函数
+
+	int NETDVR_RegCallBackSearchDevice(PFUN_SearchDevice_CB p_cb_func, void* pContext);
+	注册设备搜索回调函数
+
+	int NETDVR_SearchDevice();
+	开始搜索
+
++增加如下接口
+	int NETDVR_GetDeviceInfo(int Handle, struct NETDVR_DeviceInfo_t *pDeviceInfo);
+	获得设备信息
+	
+	int NETDVR_GetVideoProperty(int Handle, struct NETDVR_VideoProperty_t *pVideoPro);
+	获得视频属性: 编码类型,最大宽,高
+	
+	int NETDVR_GetAudioProperty(int Handle, struct NETDVR_AudioProperty_t *pVideoPro);
+	获得音频属性: 编码类型,采样率等
+	
+	int NETDVR_GetVoipProperty(int Handle, struct NETDVR_VOIPProperty_t *pVoipPro);
+	获得VOIP属性
+	
+	int NETDVR_GetMDProperty(int Handle, struct NETDVR_MDProperty_t *pMDPro);
+	获得移动侦测属性:宏块行列数
+	
+-去掉的功能
+	异常处理相关接口
+
+*调整的功能
+报警布防全部归到录像布防中
+	int NETDVR_GetRecordSCH(int Handle, unsigned char chn, enum NETDVR_WEEKDAY day, struct NETDVR_RecordSCH_t *p_para);
+	获得录像布防
+	
+	int NETDVR_SetRecordSCH(int Handle, const struct NETDVR_RecordSCH_t *p_para);
+	设置录像布防
+	
+用户管理
+	不再使用链表,使用数组控制
+	接口如下:
+	int NETDVR_GetUserInfo(int Handle, struct NETDVR_UserNumber_t *p_para);
+	获得全部用户信息
+
+	int NETDVR_AddUserInfo(int Handle, const struct NETDVR_userInfo_t *p_para);
+	添加用户信息
+
+	int NETDVR_EditUserInfo(int Handle, const struct NETDVR_userInfo_t *p_para);
+	编辑用户信息:权限,密码
+
+	int NETDVR_DelUserInfo(int Handle, const char *username);
+	删除用户信息
+

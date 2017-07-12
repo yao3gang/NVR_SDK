@@ -1,0 +1,48 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: NetDvr - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\Users\ADMINI~1\AppData\Local\Temp\RSP15DB.tmp" with contents
+[
+/nologo /MD /W3 /GX /O2 /I "..\common\include" /I "IpHelper" /I "jpeg6b" /D "WIN32" /D "_AFXDLL" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "NETDVR_EXPORTS" /FR"Release/" /Fp"Release/NetDvr.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c 
+"E:\yaogang\YueTianSDK\NetDvrSDK\NetDvr\NetDvrPrivate.cpp"
+]
+Creating command line "cl.exe @C:\Users\ADMINI~1\AppData\Local\Temp\RSP15DB.tmp" 
+Creating temporary file "C:\Users\ADMINI~1\AppData\Local\Temp\RSP15DC.tmp" with contents
+[
+libjpeg.lib custommp4.lib ctrlprotocol.lib ws2_32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /stack:0x1400000 /dll /incremental:no /pdb:"Release/MyNetDvr2.pdb" /machine:I386 /nodefaultlib:"LIBC" /def:"..\common\include\netdvr.def" /out:"..\lib\MyNetDvr2.dll" /implib:"..\lib\MyNetDvr2.lib" /libpath:"..\lib" /libpath:"jpeg6b" 
+.\Release\AudioPlay.obj
+.\Release\avilib.obj
+.\Release\debug_new.obj
+.\Release\NetDvr.obj
+.\Release\NetDvrPrivate.obj
+.\Release\TLFileLib.obj
+.\Release\NetDvr.res
+\yaogang\YueTianSDK\NetDvrSDK\lib\custommp4.lib
+\yaogang\YueTianSDK\NetDvrSDK\lib\ctrlprotocol.lib
+]
+Creating command line "link.exe @C:\Users\ADMINI~1\AppData\Local\Temp\RSP15DC.tmp"
+<h3>Output Window</h3>
+Compiling...
+NetDvrPrivate.cpp
+E:\yaogang\YueTianSDK\NetDvrSDK\NetDvr\NetDvrPrivate.cpp(3096) : warning C4018: '==' : signed/unsigned mismatch
+E:\yaogang\YueTianSDK\NetDvrSDK\NetDvr\NetDvrPrivate.cpp(3955) : warning C4018: '<' : signed/unsigned mismatch
+E:\yaogang\YueTianSDK\NetDvrSDK\NetDvr\NetDvrPrivate.cpp(4772) : warning C4018: '==' : signed/unsigned mismatch
+E:\yaogang\YueTianSDK\NetDvrSDK\NetDvr\NetDvrPrivate.cpp(5528) : warning C4244: '=' : conversion from '__int64' to 'unsigned int', possible loss of data
+Linking...
+   Creating library ..\lib\MyNetDvr2.lib and object ..\lib\MyNetDvr2.exp
+Creating command line "bscmake.exe /nologo /o"Release/NetDvr.bsc"  .\Release\AudioPlay.sbr .\Release\avilib.sbr .\Release\debug_new.sbr .\Release\NetDvr.sbr .\Release\NetDvrPrivate.sbr .\Release\TLFileLib.sbr"
+Creating browse info file...
+<h3>Output Window</h3>
+
+
+
+<h3>Results</h3>
+MyNetDvr2.dll - 0 error(s), 4 warning(s)
+</pre>
+</body>
+</html>

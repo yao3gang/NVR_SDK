@@ -1,0 +1,322 @@
+LIBRARY "MyNetDvr2"
+
+EXPORTS
+	NETDVR_startup				@1
+	NETDVR_cleanup				@2
+
+	NETDVR_createDVRbyDomain	@3
+
+	NETDVR_createDVR			@4
+	NETDVR_destroyDVR			@5
+
+	NETDVR_regCBMsgConnLost		@6
+
+	NETDVR_loginServer			@7
+	NETDVR_logoutServer			@8
+
+	NETDVR_StartRealPlay		@9
+	NETDVR_StopRealPlay			@10
+	NETDVR_SetVideoDecFlag		@11
+	NETDVR_OpenRealAudio		@12
+	NETDVR_CloseRealAudio		@13
+	NETDVR_MuteRealAudio		@14
+
+	NETDVR_setRecordCB			@15
+	NETDVR_setRecordFileNameCB	@16
+	NETDVR_startRecord			@17
+	NETDVR_stopRecord			@18
+
+	NETDVR_snapshot				@19
+
+	NETDVR_setSystemParams		@20
+	NETDVR_getSystemParams		@21
+
+	NETDVR_setPtzParams			@22
+	NETDVR_getPtzParams			@23
+
+
+	NETDVR_startYuntaiCruise	@24
+	NETDVR_stopYuntaiCruise		@25
+
+	NETDVR_startVOIP			@26
+	NETDVR_stopVOIP				@27
+	NETDVR_VOIPRegRcvCB			@28
+	NETDVR_VOIPRegCaptureCB		@29
+	NETDVR_VOIPSetSendMode		@30
+	NETDVR_VOIPSendData			@31
+
+	NETDVR_logSearch			@32
+	NETDVR_logSearchClean		@33
+
+	NETDVR_setVideoParams		@34
+	NETDVR_getVideoParams		@35
+
+	NETDVR_setRecordParams		@36
+	NETDVR_getRecordParams		@37
+
+
+
+	NETDVR_setAlarmInParams		@38
+	NETDVR_getAlarmInParams		@39
+
+
+	NETDVR_setAlarmOutParams	@40
+	NETDVR_getAlarmOutParams	@41
+
+	NETDVR_setNetworkParams		@42
+	NETDVR_getNetworkParams		@43
+	NETDVR_clearAlarms			@44
+
+	NETDVR_recFilesSearch		@45
+	NETDVR_recFilesSearchClean	@46
+
+
+	NETDVR_regCBFileRecieverProgress	@47
+	NETDVR_regCBFileRecieverError		@48
+
+
+	NETDVR_startFileDownload	@49
+	NETDVR_stopFileDownload		@50
+
+	NETDVR_startPlayByFile		@51
+	NETDVR_startPlayByTime		@52
+	NETDVR_stopPlayBack			@53
+
+	NETDVR_setPlayCBAudioMute	@54
+
+
+
+	NETDVR_pausePlay			@55
+	NETDVR_resumePlay			@56
+	NETDVR_singleFramePlay		@57
+	NETDVR_fastPlay				@58
+	NETDVR_slowPlay				@59
+	NETDVR_setPlayRate			@60
+
+	NETDVR_playPrevious			@61
+	NETDVR_playNext				@62
+	NETDVR_playSeek				@63
+	NETDVR_playMute				@64
+	NETDVR_playProgress			@65
+
+
+	NETDVR_regCBUpdateProgress	@66
+	NETDVR_regCBUpdateError		@67
+	NETDVR_startUpdate			@68
+	NETDVR_stopUpdate			@69
+
+	NETDVR_restoreFactorySettings	@70
+	NETDVR_reboot				@71
+	NETDVR_shutdown				@72
+
+	NETDVR_getSystemTime		@73
+	NETDVR_setSystemTime		@74
+
+	NETDVR_getMotionDection		@75
+	NETDVR_setMotionDection		@76
+
+
+	NETDVR_getVideoLost			@77
+	NETDVR_setVideoLost			@78
+
+
+
+	NETDVR_remoteGetHddInfo		@79
+	NETDVR_remoteGetSysVerInfo	@80
+
+	NETDVR_sdkCheckout			@81
+
+
+	NETDVR_setConnectTimeout	@82
+	NETDVR_getConnectTimeout	@83
+
+	NETDVR_sendExtendCmd		@84
+
+	NETDVR_setPicAdjust			@85
+	NETDVR_getPicAdjust			@86
+
+	NETDVR_GetDeviceInfo		@87
+	NETDVR_GetVideoProperty		@88
+	NETDVR_GetAudioProperty		@89
+	NETDVR_GetVoipProperty		@90
+	NETDVR_GetMDProperty		@91
+	NETDVR_GetVGAsoluton		@92
+
+	NETDVR_SetCruiseParam		@93
+	NETDVR_GetCruiseParam		@94
+
+	NETDVR_GetSubStreamParam	@95
+	NETDVR_SetSubStreamParam	@96
+
+	NETDVR_GetAlarmNoticeParam	@97
+	NETDVR_SetAlarmNoticeParam	@98
+
+	NETDVR_GetRecordSCH			@99
+	NETDVR_SetRecordSCH			@100
+
+	NETDVR_GetVideoBlockParam	@101
+	NETDVR_SetVideoBlockParam	@102
+
+	NETDVR_GetUserInfo			@103
+	NETDVR_AddUserInfo			@104
+	NETDVR_EditUserInfo			@105
+	NETDVR_DelUserInfo			@106
+
+	NETDVR_GetRecordState		@107
+	NETDVR_SetRecordState		@108
+
+	NETDVR_PtzControl			@109
+	NETDVR_SetYTTrack			@110
+	NETDVR_SetYTPresetPoint		@111
+	
+	NETDVR_SearchDevice			@112
+	NETDVR_RegCallBackSearchDevice	@113
+
+	NETDVR_regCBAlarmState		@114
+	NETDVR_SetAlarmUpload		@115
+
+	NETDVR_DeinterlaceVideoFrame	@116
+	NETDVR_CtrlCDROM			@117
+	NETDVR_GetComParam			@118
+	NETDVR_SetComParam			@119
+
+	NETDVR_SerialStart			@120
+	NETDVR_SerialSend			@121
+	NETDVR_SerialStop			@122
+
+	NETDVR_setReconnectTime		@123
+	NETDVR_regCBMsgReconnect	@124
+	NETDVR_setReconnectFlag		@125
+
+	NETDVR_getSysLangList		@126
+	NETDVR_getBitRateList		@127
+
+	NETDVR_getxwServerParams	@128
+	NETDVR_setxwServerParams	@129
+
+	NETDVR_getSMTPServerParams	@130
+	NETDVR_setSMTPServerParams	@131
+
+	NETDVR_getLASAFQQInfo		@132
+	NETDVR_setLASAFQQInfo		@133
+
+	NETDVR_formatHdd			@134
+	NETDVR_remoteSnap			@135
+
+	NETDVR_IsUseUTCTime			@136
+	
+	NETDVR_getPresetList		@137
+	NETDVR_AddPresetByName		@138
+	NETDVR_getPTZRate			@139
+
+	NETDVR_resetPicAdjust		@140
+	NETDVR_getFrameRateList		@141
+	NETDVR_getVideoResoluList	@142
+	NETDVR_getMaxIMGMaskNum		@143
+
+	NETDVR_setNRServer			@144
+	NETDVR_getNRServer			@145
+
+	NETDVR_setAlarmOutVal		@146
+	NETDVR_getAlarmInVal		@147
+
+	NETDVR_startTimeDownload	@148
+	NETDVR_stopTimeDownload		@149
+
+	NETDVR_getAlarmUploadState	@150
+	NETDVR_getSpecialinfo_t		@151
+
+	NETDVR_FindMotion_Info		@152
+	NETDVR_GetNextMotionInfo	@153
+	NETDVR_FindMotionClose		@154
+
+	NETDVR_MakeKeyFrame			@155
+
+	NETDVR_getCrearSvrInfo		@156
+	NETDVR_setCrearSvrInfo		@157
+
+	NETDVR_startRecord2			@158
+	NETDVR_stopRecord2			@159
+	NETDVR_setRecord2CB			@160
+	NETDVR_setRecord2FileNameCB @161
+	NETDVR_GetRecord2State		@162
+
+	NETDVR_RegistDdns			@163
+	NETDVR_CancelDdns			@164
+
+	NETDVR_GetAlarmSCH			@165
+	NETDVR_SetAlarmSCH			@166
+	
+	NETDVR_RegDecCB				@167 
+
+	NETDVR_getMDAlarmDelayList  @168
+	NETDVR_getMDSenseList		@169
+	NETDVR_getBaudRateList		@170
+	NETDVR_getPTZProtocolList	@171
+	NETDVR_GetRecordSCHByType   @172
+	NETDVR_SetRecordSCHByType	@173
+	NETDVR_setHuiNaInfo			@174
+	NETDVR_getHuiNaInfo			@175
+
+	NETDVR_getMotionDectionfor2_0		@176
+	NETDVR_setMotionDectionfor2_0		@177
+	NETDVR_getVideoLostfor2_0			@178
+	NETDVR_setVideoLostfor2_0			@179
+	NETDVR_setSMTPServerParamsfor2_0	@180
+	NETDVR_getSMTPServerParamsfor2_0	@181
+
+	NETDVR_getRebootTime				@182
+	NETDVR_getAlarmTimeInterval			@183
+	NETDVR_setAlarmTimeInterval			@184
+	NETDVR_getDDNSList					@185
+
+	NETDVR_SetMonitorInfo				@186
+	NETDVR_GetAdvPrivilege				@187
+
+	NETDVR_seachIPCList				@188
+	NETDVR_getAddIPCList				@189
+	NETDVR_setIPC						@190
+	NETDVR_addIPC					@191
+	NETDVR_deleteIPC					@192
+	NETDVR_destoryIPCList				@193
+	NETDVR_GetPatrolPara				@194
+	NETDVR_SetPatrolPara				@195
+	NETDVR_GetPreviewPara				@196
+	NETDVR_SetPreviewPara				@197
+	NETDVR_GetChnPara					@198
+	NETDVR_SetChnPara					@199
+	NETDVR_CleanDesktopAlarmIcon		@200
+	NETDVR_CLOSE_GUIDE					@201
+	NETDVR_GetIPCChnLinkStatus			@202
+
+	
+	
+
+	TL_OpenFile					@250
+	TL_CloseFile				@251
+	TL_FileHasAudio				@252
+	TL_FileTotalTime			@253
+	TL_FileStartTime			@254
+	TL_FileEndTime				@255
+	TL_FileVideoFrameNum		@256
+	TL_FileAudioFrameNum		@257
+	TL_FileVideoWidth			@258
+	TL_FileVideoHeight			@259
+	TL_FileAudioBits			@260
+	TL_FileAudioSampleRate		@261
+	TL_FileReadOneMediaFrame	@262
+	TL_FileReadOneVideoFrame	@263
+	TL_FileReadOneAudioFrame	@264
+	TL_FileSeekToPrevSeg		@265
+	TL_FileSeekToNextSeg		@266
+	TL_FileSeekToSysTime		@267
+	TL_FileDecVideoFrame		@268
+	TL_FILEDecAudioFrame		@269
+	TL_FileSetVideo				@270
+	TL_FileSetAudio				@271
+	TL_FileWriteVideoFrame		@272
+	TL_FileWriteAudioFrame		@273
+	TL_FileEndPosition			@274
+	SnapBMPFile					@275
+	SnapJPGFile					@276
+	NETDVR_PatrolSync			@277

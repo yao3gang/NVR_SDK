@@ -1,0 +1,4 @@
+SRC_FILE = ../source/ctrlprotocol.c ../source/testclient.c
+INC_DIR = ../../common/include
+all:
+	$(CC) $(SRC_FILE) -I$(INC_DIR) -o client

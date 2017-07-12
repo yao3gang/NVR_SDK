@@ -1,0 +1,340 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Chinese (P.R.C.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+#ifdef _WIN32
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 4, 2\r\n"
+    "#pragma code_page(936)\r\n"
+    "#endif //_WIN32\r\n"
+    "#include ""res\\MfcDemo.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""l.chs\\afxres.rc""          // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON    DISCARDABLE     "res\\MfcDemo.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 235, 55
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "关于 MfcDemo"
+FONT 9, "宋体"
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
+    LTEXT           "MfcDemo 1.0 版",IDC_STATIC,40,10,119,8,SS_NOPREFIX
+    LTEXT           "版权所有 (C) 2009",IDC_STATIC,40,25,119,8
+    DEFPUSHBUTTON   "确定",IDOK,178,7,50,14,WS_GROUP
+END
+
+IDD_MFCDEMO_DIALOG DIALOGEX 0, 0, 541, 549
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "MfcDemo"
+FONT 9, "宋体"
+BEGIN
+    EDITTEXT        IDC_ServerAddr,45,17,76,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_UserID,266,17,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_UserPW,369,17,40,14,ES_PASSWORD | ES_AUTOHSCROLL
+    GROUPBOX        "Login",IDC_STATIC,7,7,527,30,BS_FLAT
+    LTEXT           "Server",IDC_STATIC,15,21,25,8
+    LTEXT           "UserID",IDC_STATIC,233,21,25,8
+    LTEXT           "Password",IDC_STATIC,330,21,33,8
+    LTEXT           "Port",IDC_STATIC,136,21,17,8
+    DEFPUSHBUTTON   "login",IDC_BTlogin,426,17,29,14
+    PUSHBUTTON      "logout",IDC_BTlogout,468,17,29,14
+    GROUPBOX        "Preview",IDC_STATIC,7,46,348,216,BS_FLAT
+    CONTROL         "",IDC_PLAYWND1,"Static",SS_BLACKFRAME,15,60,117,96
+    CONTROL         "",IDC_PLAYWND2,"Static",SS_BLACKFRAME,136,60,117,96
+    CONTROL         "",IDC_PLAYWND3,"Static",SS_BLACKFRAME,15,160,117,96
+    CONTROL         "",IDC_PLAYWND4,"Static",SS_BLACKFRAME,136,160,117,96
+    PUSHBUTTON      "PlayAll",IDC_PlayAll,262,87,42,14
+    PUSHBUTTON      "StopAll",IDC_StopAll,306,87,42,14
+    PUSHBUTTON      "PlayAudio",IDC_PlayAudio,262,108,42,14
+    PUSHBUTTON      "StopAudio",IDC_StopAudio,306,108,42,14
+    PUSHBUTTON      "StartRec",IDC_StartRec,262,129,42,14
+    PUSHBUTTON      "StopRec",IDC_StopRec,306,129,42,14
+    PUSHBUTTON      "Snap",IDC_Snap,262,150,42,14
+    COMBOBOX        IDC_COMBOVideoType,262,62,85,38,CBS_DROPDOWN | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Mute",IDC_Mute,306,150,42,14
+    PUSHBUTTON      "StartVoip",IDC_StartVoip,262,192,42,14
+    PUSHBUTTON      "StopVoip",IDC_StopVoip,306,192,42,14
+    GROUPBOX        "Ptz",IDC_STATIC,7,272,147,116,BS_FLAT
+    PUSHBUTTON      "PtzParam",IDC_PtzParam,13,284,37,14
+    GROUPBOX        "RecSearch && Playback",IDC_STATIC,359,46,175,215,
+                    BS_FLAT
+    LTEXT           "this sample search the first 3 files from  2010-01-01 00:00:00 to 2012-01-01 00:00:00.And play the first one.",
+                    IDC_STATIC,364,57,162,28,WS_BORDER
+    PUSHBUTTON      "RecSearch",IDC_RecSearch,382,89,50,14
+    PUSHBUTTON      "SearchClean",IDC_SearchClean,461,89,50,14
+    CONTROL         "",IDC_PLAYWND5,"Static",SS_BLACKFRAME,364,107,117,96
+    CONTROL         "Slider1",IDC_SLIDER1,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,364,208,117,12
+    PUSHBUTTON      "FilePlay",IDC_FilePlay,484,107,50,14
+    PUSHBUTTON      "TimePlay",IDC_TimePlay,484,127,50,14
+    PUSHBUTTON      "DownLoad",IDC_DownLoad,484,149,50,14
+    PUSHBUTTON      "Pause",IDC_PbPause,376,221,25,14
+    PUSHBUTTON      "Resume",IDC_PbResume,406,221,29,14
+    PUSHBUTTON      "Step",IDC_PbStep,440,221,21,14
+    PUSHBUTTON      "Fast",IDC_PbFast,466,221,21,14
+    PUSHBUTTON      "Slow",IDC_PbSlow,492,221,21,14
+    PUSHBUTTON      "Rate",IDC_PbRate,376,241,21,14
+    PUSHBUTTON      "Prev",IDC_PbPrev,404,241,21,14
+    PUSHBUTTON      "Next",IDC_PbNext,432,241,21,14
+    PUSHBUTTON      "Seek",IDC_PbSeek,460,241,21,14
+    PUSHBUTTON      "Mute",IDC_PbMute,488,241,21,14
+    PUSHBUTTON      "PtzCtr",IDC_PtzCtr,62,284,37,14
+    PUSHBUTTON      "PtzStop",IDC_PtzStop,111,284,37,14
+    PUSHBUTTON      "SetPreset",IDC_SetPreset,13,301,41,14
+    PUSHBUTTON      "GoPreset",IDC_GoPreset,58,301,37,14
+    PUSHBUTTON      "ClearPreset",IDC_ClearPreset,99,301,49,14
+    PUSHBUTTON      "StartRecTrack",IDC_StartRecTrack,13,318,57,14
+    PUSHBUTTON      "StopRecTrack",IDC_StopRecTrack,96,318,53,14
+    PUSHBUTTON      "StartTrack",IDC_StartTrack,13,335,57,14
+    PUSHBUTTON      "StopTrack",IDC_StopTrack,96,335,53,14
+    PUSHBUTTON      "InsertCruise",IDC_InsertCruise,13,352,57,14
+    PUSHBUTTON      "DeleteCruise",IDC_DeleteCruise,96,352,53,14
+    PUSHBUTTON      "StartCruise",IDC_StartCruise,13,369,57,14
+    PUSHBUTTON      "StopCruise",IDC_StopCruise,96,369,53,14
+    GROUPBOX        "Params",IDC_STATIC,164,272,124,116,BS_FLAT
+    PUSHBUTTON      "System",IDC_ParamSys,170,290,50,14
+    PUSHBUTTON      "Video",IDC_ParamVideo,230,290,50,14
+    PUSHBUTTON      "Record",IDC_ParamRec,170,313,50,14
+    PUSHBUTTON      "RecTime",IDC_ParamRecTime,230,313,50,14
+    PUSHBUTTON      "Exception",IDC_ParamException,170,336,50,14
+    PUSHBUTTON      "Network",IDC_ParamNetwork,230,336,50,14
+    PUSHBUTTON      "VideoLost",IDC_ParamVideoLost,170,359,50,14
+    PUSHBUTTON      "SHTime",IDC_ParamSHTime,230,359,50,14
+    GROUPBOX        "Tools",IDC_STATIC,298,272,124,116,BS_FLAT
+    PUSHBUTTON      "ManualRec",IDC_ManualRec,305,290,50,14
+    PUSHBUTTON      "SysTime",IDC_SysTime,363,290,50,14
+    PUSHBUTTON      "HddInfo",IDC_HddInfo,305,313,50,14
+    PUSHBUTTON      "SysVerInfo",IDC_SysInfo,363,313,50,14
+    PUSHBUTTON      "Update",IDC_Update,305,336,50,14
+    PUSHBUTTON      "Restore",IDC_Restore,363,336,50,14
+    PUSHBUTTON      "Reboot",IDC_Reboot,305,359,50,14
+    PUSHBUTTON      "ShutDown",IDC_ShutDown,363,359,50,14
+    GROUPBOX        "MotionDection",IDC_STATIC,431,272,103,116,BS_FLAT
+    PUSHBUTTON      "MDParam",IDC_MDParam,457,292,50,14
+    PUSHBUTTON      "MDTime",IDC_MDTime,457,322,50,14
+    PUSHBUTTON      "MDAlarm",IDC_MDAlarm,457,352,50,14
+    GROUPBOX        "Alarm",IDC_STATIC,7,396,140,148,BS_FLAT
+    GROUPBOX        "Log",IDC_STATIC,154,395,89,149,BS_FLAT
+    PUSHBUTTON      "AlarmInParam",IDC_AlarmInParam,18,418,53,14
+    PUSHBUTTON      "AlarmInTime",IDC_AlarmInTime,18,440,53,14
+    PUSHBUTTON      "AlarmInAlarm",IDC_AlarmInAlarm,18,462,53,14
+    PUSHBUTTON      "AlarmInPtz",IDC_AlarmInPtz,18,484,53,14
+    PUSHBUTTON      "AlarmOutParam",IDC_AlarmOutParam,81,418,57,14
+    PUSHBUTTON      "AlarmOutTime",IDC_AlarmOutTime,81,440,57,14
+    PUSHBUTTON      "ClearAlarms",IDC_ClearAlarms,81,462,57,14
+    PUSHBUTTON      "AlarmState",IDC_AlarmState,81,484,57,14
+    PUSHBUTTON      "LogSearch",IDC_LOGSEARCH,175,429,50,14
+    PUSHBUTTON      "LogClean",IDC_LOGCLEAN,176,463,50,14
+    GROUPBOX        "User",IDC_STATIC,254,395,135,149,BS_FLAT
+    PUSHBUTTON      "GetUserList",IDC_GetUserList,266,419,50,14
+    PUSHBUTTON      "AddUser",IDC_AddUser,266,451,50,14
+    PUSHBUTTON      "DelUser",IDC_DelUser,266,481,50,14
+    PUSHBUTTON      "ClearUserList",IDC_ClearUserList,325,419,57,14
+    PUSHBUTTON      "EditUser",IDC_EditUser,325,451,50,14
+    GROUPBOX        "Other",IDC_STATIC,399,395,135,149,BS_FLAT
+    PUSHBUTTON      "RegConnLost",IDC_RegConnLost,410,407,50,14
+    PUSHBUTTON      "GetConnTime",IDC_GetConnTime,410,428,50,14
+    PUSHBUTTON      "SetConnTime",IDC_SetConnTime,468,428,50,14
+    PUSHBUTTON      "SDKcheck",IDC_SDKcheck,468,407,50,14
+    EDITTEXT        IDC_ServerPort,166,18,48,14,ES_AUTOHSCROLL | ES_NUMBER
+    PUSHBUTTON      "AlarmUpload",IDC_RegAlarmUpload,409,450,51,13
+    PUSHBUTTON      "GetFileFrame",IDC_GetFileFrame,483,172,51,13
+    PUSHBUTTON      "SerialSend",IDC_SERIALPORT,469,472,49,13
+    PUSHBUTTON      "SerialParam",IDC_SerialParam,470,451,51,13
+    PUSHBUTTON      "SerialOpen",IDC_SerialOpen,409,469,50,14
+    PUSHBUTTON      "SerialClose",IDC_SerialClose,411,492,48,12
+    PUSHBUTTON      "SetReconnect",IDC_SETRECONN,470,493,50,13
+    PUSHBUTTON      "Polling",IDC_BUTTON_POLLING,263,171,41,14
+    PUSHBUTTON      "TimeDownL",IDC_BUTTON_TIMEDOWNLOAD,484,189,50,14
+    PUSHBUTTON      "testLAS",IDC_testLAS,411,509,50,14
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080404b0"
+        BEGIN
+            VALUE "Comments", "\0"
+            VALUE "CompanyName", "\0"
+            VALUE "FileDescription", "MfcDemo Microsoft 基础类应用程序\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "MfcDemo\0"
+            VALUE "LegalCopyright", "版权所有 (C) 2009\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "MfcDemo.EXE\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "MfcDemo 应用程序\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x804, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 228
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 48
+    END
+
+    IDD_MFCDEMO_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 534
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 544
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_MFCDEMO_DIALOG DLGINIT
+BEGIN
+    IDC_COMBOVideoType, 0x403, 11, 0
+0x614d, 0x6e69, 0x7453, 0x6165, 0x6d72, "\000" 
+    IDC_COMBOVideoType, 0x403, 10, 0
+0x7553, 0x5362, 0x7274, 0x6165, 0x006d, 
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_ABOUTBOX            "关于 MfcDemo(&A)..."
+END
+
+#endif    // Chinese (P.R.C.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+#ifdef _WIN32
+LANGUAGE 4, 2
+#pragma code_page(936)
+#endif //_WIN32
+#include "res\MfcDemo.rc2"  // non-Microsoft Visual C++ edited resources
+#include "l.chs\afxres.rc"          // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
