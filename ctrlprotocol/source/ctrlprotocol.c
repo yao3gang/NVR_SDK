@@ -4,19 +4,6 @@
 #include "ctrlprotocol.h"
 #include "common.h"
 
-#ifdef WIN32
-typedef HANDLE MutexHandle;
-typedef HANDLE SemHandle;
-#else
-typedef pthread_mutex_t MutexHandle;
-typedef sem_t SemHandle;
-#define INVALID_SOCKET	(-1)
-#define SOCKET_ERROR	(-1)
-#include <netinet/tcp.h>
-#endif
-
-
-
 const u8 gc_protocolGUID[16] = {0x61,0x78,0xDA,0xB5,0xD3,0x8E,0x43,0xdb,0x9E,0xD7,0xF2,0x20,0x78,0x36,0x18,0x79};
 
 
@@ -33,6 +20,9 @@ struct TCP_KEEPALIVE{
 
 #define SIO_KEEPALIVE_VALS   _WSAIOW(IOC_VENDOR,4)
 // #endif
+
+//yaogang modify for server heart beat check
+#define HEART_BEAT_INTERVAL (1*60) //10min 
 
 static BOOL SockClose(SOCKHANDLE hSock)
 {
@@ -59,9 +49,12 @@ u16 CleanCPHandle(CPHandle cph)
 	cph->conntype = CTRL_CONNECTION_NULL;
 	cph->newmsgcome = 0;
 	cph->nolnkcount = 0;
+	cph->last_msg_time = 0;//yaogang modify for server heart beat check
 	memset(&cph->guid,0,sizeof(cph->guid));
 	return CTRL_SUCCESS;
 }
+
+
 
 SOCKHANDLE ConnectWithTimeout(u32 dwHostIp, u16 wHostPort, u32 dwTimeOut, u16 *pwErrorCode)
 {
@@ -478,8 +471,11 @@ int CheckTcpConnType(SOCKHANDLE hSock)
 CPHandle AddCPLink(SOCKHANDLE hSock,u8 conntype,u32 ip,u16 port,u16 *pwErrorCode)
 {
 	int i;
+	struct in_addr in;
+	
 	for(i=0;i<CTRL_PROTOCOL_MAXLINKNUM;i++)
 	{
+		LockMutex(hCPLink[i].hMutex);
 		if(hCPLink[i].sockfd == INVALID_SOCKET)
 		{
 			hCPLink[i].sockfd = hSock;
@@ -488,16 +484,89 @@ CPHandle AddCPLink(SOCKHANDLE hSock,u8 conntype,u32 ip,u16 port,u16 *pwErrorCode
 			hCPLink[i].port = port;
 			hCPLink[i].newmsgcome = 0;
 			hCPLink[i].nolnkcount = 0;
+			hCPLink[i].last_msg_time = time(NULL);
 			memset(&hCPLink[i].guid,0,sizeof(hCPLink[i].guid));
-
+			in.s_addr = ip;
+			printf("AddCPLink server %s, time: %d\n",
+					inet_ntoa(in), hCPLink[i].last_msg_time);
+			
+			UnlockMutex(hCPLink[i].hMutex);
 			if(pwErrorCode) *pwErrorCode = CTRL_SUCCESS;
 			return &hCPLink[i];
 		}
+		UnlockMutex(hCPLink[i].hMutex);
 	}
 	if(pwErrorCode) *pwErrorCode = CTRL_FAILED_LINKLIMIT;
 	return NULL;
 }
 
+#if 1
+//yaogang modify for server heart beat check
+//只在满足条件情况下发心跳请求，处理在CPTaskProc
+
+void *CheckConnTaskProc(void *pParam)
+{
+	u32 ip = 0;
+	struct in_addr in;
+	
+	int i = 0;
+	int sock_fd = INVALID_SOCKET;
+	CPHandle cph = NULL;
+	int cur_time_s = 0;
+	int last_msg_time_s = 0;
+	ifly_cp_header_t cpsndhead;
+	cpsndhead.length	= htonl(sizeof(ifly_cp_header_t));
+	cpsndhead.type		= htons(CTRL_NOTIFY);
+	cpsndhead.event		= htons(CTRL_NOTIFY_HEARTBEAT_REQ);
+	cpsndhead.version	= htons(CTRL_VERSION);
+
+	printf("$$$$$$$$$$$$$$$$$$CheckConnTaskProc\n");
+	
+	while (1)
+	{
+		
+	#ifndef WIN32
+		pthread_testcancel();// 1 min
+		sleep(60);
+	#else
+		Sleep(60000);
+	#endif
+
+		cur_time_s = time(NULL);
+	
+		for(i=0; i<CTRL_PROTOCOL_MAXLINKNUM; ++i)
+		{
+			cph = &hCPLink[i];
+			
+			LockMutex(cph->hMutex);
+			sock_fd = hCPLink[i].sockfd;
+			last_msg_time_s = hCPLink[i].last_msg_time;
+
+			ip = hCPLink[i].ip;
+			UnlockMutex(cph->hMutex);
+			
+			if(INVALID_SOCKET == sock_fd)
+			{				
+				continue;
+			}
+
+			//服务器10分钟没有回应，就发
+			//回应时间在CPTaskProc 中更新
+			if (abs(cur_time_s - last_msg_time_s) > HEART_BEAT_INTERVAL)
+			{				
+				cpsndhead.number	= htons(GetTransactionNum());
+				send(sock_fd, (char *)&cpsndhead, ntohl(cpsndhead.length), 0);
+
+				in.s_addr = ip;
+				printf("send heart beat req to server %s, time: %d\n",
+					inet_ntoa(in), cur_time_s);
+			}
+		}
+	}
+
+	return 0;
+}
+#else
 void *CheckConnTaskProc(void *pParam)
 {
 	int i;
@@ -570,7 +639,7 @@ void *CheckConnTaskProc(void *pParam)
 	
 	return 0;
 }
-
+#endif
 
 void *CPTaskProc(void *pParam)
 {
@@ -584,7 +653,13 @@ void *CPTaskProc(void *pParam)
 	u8 abyBuf[4096];
 	ifly_cp_header_t cpsndhead;
 	ifly_cp_header_t cprcvhead;
+	int cur_time_s = 0;//yaogang modify for server heart beat check
+	int last_msg_time_s = 0;
+	int sock_fd = INVALID_SOCKET;
+	int sock_fd_max = INVALID_SOCKET;
 	u16 wRet;
+
+	struct in_addr in;
 
 #ifndef WIN32
 	printf("$$$$$$$$$$$$$$$$$$CPTaskProc id:%d\n",gettid());
@@ -609,22 +684,73 @@ void *CPTaskProc(void *pParam)
 #ifndef WIN32
 		pthread_testcancel();
 #endif
-
+		cur_time_s = time(NULL);
 		FD_ZERO(&set);
-		if(hServerSock != INVALID_SOCKET) FD_SET(hServerSock,&set);
-		for(i=0;i<CTRL_PROTOCOL_MAXLINKNUM;i++)
+		sock_fd_max = INVALID_SOCKET;
+		
+		if(hServerSock != INVALID_SOCKET) 
 		{
-			if(hCPLink[i].sockfd != INVALID_SOCKET)
+			FD_SET(hServerSock, &set);
+
+			if (sock_fd_max < hServerSock)
 			{
-				FD_SET(hCPLink[i].sockfd,&set);
+				sock_fd_max = hServerSock;
 			}
 		}
-		if(hInterSock != INVALID_SOCKET) FD_SET(hInterSock,&set);
+
+		if(hInterSock != INVALID_SOCKET) 
+		{
+			FD_SET(hInterSock, &set);
+
+			if (sock_fd_max < hInterSock)
+			{
+				sock_fd_max = hInterSock;
+			}
+		}
+		
+		for(i=0;i<CTRL_PROTOCOL_MAXLINKNUM;i++)
+		{
+			LockMutex(hCPLink[i].hMutex);
+			
+			sock_fd = hCPLink[i].sockfd;
+			last_msg_time_s = hCPLink[i].last_msg_time;
+			in.s_addr = hCPLink[i].ip;
+			
+			UnlockMutex(hCPLink[i].hMutex);
+			
+			if(sock_fd == INVALID_SOCKET)
+			{
+				continue;
+			}
+			
+			if (abs(cur_time_s - last_msg_time_s) > HEART_BEAT_INTERVAL+3*60)// 15 min
+			{
+				printf("server %s connect lost\n", inet_ntoa(in));
+				if(pfuncMsgCB != NULL)
+				{
+					//printf("CPTaskProc CTRL_NOTIFY_CONNLOST\n");
+					pfuncMsgCB(&hCPLink[i],CTRL_NOTIFY_CONNLOST,NULL,0,NULL,NULL,pCallBackContext);
+				}
+
+				LockMutex(hCPLink[i].hMutex);
+				CleanCPHandle(&hCPLink[i]);
+				UnlockMutex(hCPLink[i].hMutex);
+
+				continue;
+			}
+			
+			FD_SET(sock_fd, &set);
+
+			if (sock_fd_max < sock_fd)
+			{
+				sock_fd_max = sock_fd;
+			}
+		}
 		
 		//linux平台下timeout会被修改以表示剩余时间,故每次都要重新赋值
 		timeout.tv_sec = 20;
 		timeout.tv_usec = 0;
-		ret = select(FD_SETSIZE,&set,NULL,NULL,&timeout);
+		ret = select(sock_fd_max+1, &set, NULL, NULL, &timeout);
 		if(ret == 0)
 		{
 			//printf("CPTaskProc:select sock time out\n");
@@ -641,6 +767,7 @@ void *CPTaskProc(void *pParam)
 			#endif
 			continue;
 		}
+		
 		for(i=0;i<CTRL_PROTOCOL_MAXLINKNUM;i++)
 		{
 			//客户端消息:回调函数处理
@@ -657,19 +784,24 @@ void *CPTaskProc(void *pParam)
 				//printf("recv msg end\n");
 				if(ret<=0)
 				{
-					//printf("recv failed from(0x%08x,%d)\n",hCPLink[i].ip,hCPLink[i].port);
-
+					in.s_addr = hCPLink[i].ip;
+					printf("server %s recv failed\n", inet_ntoa(in));
 					if(pfuncMsgCB != NULL)
 					{
-						printf("CPTaskProc CTRL_NOTIFY_CONNLOST\n");
+						//printf("CPTaskProc CTRL_NOTIFY_CONNLOST\n");
 						pfuncMsgCB(&hCPLink[i],CTRL_NOTIFY_CONNLOST,NULL,0,NULL,NULL,pCallBackContext);
 					}
-
-					//MessageBox(NULL, "CONTINUE 1", NULL,MB_OK);
+					
+					LockMutex(hCPLink[i].hMutex);
 					CleanCPHandle(&hCPLink[i]);
+					UnlockMutex(hCPLink[i].hMutex);
+
 					continue;
 				}
+				
 				hCPLink[i].newmsgcome = 1;
+				hCPLink[i].last_msg_time = time(NULL);
+				
 				if(ret >= sizeof(ifly_cp_header_t))
 				{
 					int ret2 = 0;
@@ -719,6 +851,7 @@ void *CPTaskProc(void *pParam)
 						//MessageBox(NULL, "CONTINUE 3", NULL,MB_OK);
 						continue;
 					}
+					
 					if(cprcvhead.event == CTRL_NOTIFY_HEARTBEAT_REQ)
 					{
 						printf("recv heartbeat req msg from (0x%08x,%d)\n",hCPLink[i].ip,hCPLink[i].port);
@@ -734,9 +867,11 @@ void *CPTaskProc(void *pParam)
 						//MessageBox(NULL, "CONTINUE 4", NULL,MB_OK);
 						continue;
 					}
+					
 					if(cprcvhead.event == CTRL_NOTIFY_HEARTBEAT_RESP)
 					{
-						printf("recv heartbeat resp msg from (0x%08x,%d)\n",hCPLink[i].ip,hCPLink[i].port);
+						in.s_addr = hCPLink[i].ip;
+						printf("recv heart beat resp from %s\n", inet_ntoa(in));
 						//MessageBox(NULL, "CONTINUE 5", NULL,MB_OK);
 						continue;
 					}
@@ -752,7 +887,6 @@ void *CPTaskProc(void *pParam)
 						wRet = pfuncMsgCB(&hCPLink[i],cprcvhead.event,abyBuf+sizeof(ifly_cp_header_t),cprcvhead.length-sizeof(ifly_cp_header_t),g_byAckBuf+sizeof(ifly_cp_header_t),&g_dwAckLen,pCallBackContext);
 						//printf("recv msg,call back end\n");
 					}
-
 					else
 					{
 						//MessageBox(NULL, "call back start null\n", NULL,MB_OK);
@@ -1146,6 +1280,7 @@ u16 CPLibInit(u16 wPort)
 	for(i=0;i<CTRL_PROTOCOL_MAXLINKNUM;i++)
 	{
 		hCPLink[i].sockfd = INVALID_SOCKET;
+		CreateMutexHandle(&hCPLink[i].hMutex);//yaogang modify for server heart beat check
 		CleanCPHandle(&hCPLink[i]);
 	}
 
@@ -1216,7 +1351,7 @@ u16 CPLibInit(u16 wPort)
 
 	//printf("hehe5\n");
 
-#if 0
+#if 1 //yaogang modify for server heart beat check
 #ifdef WIN32
 	hCPCheckTask = CreateThread(NULL,STKSIZE_CPCHECK,(LPTHREAD_START_ROUTINE)CheckConnTaskProc,NULL,0,&dwTaskID);
 #else

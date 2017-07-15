@@ -7897,6 +7897,7 @@ int __stdcall NETDVR_startPlayByFile( int Handle, const struct NETDVR_recFileInf
 	{
 		pPlayBack->player.pb_rcv.bOpened = 1;
 		pPlayBack->player.m_PlayId = htonl(pPlayBack->player.pb_rcv.prcv_t->linkid);
+		//接收进度信息
 		u8 flagSend = 1;
 		ctrl_player(Handle, pPlayBack->player.m_PlayId, CTRL_CMD_PLAYPROGRESS, (char *)&flagSend, sizeof(flagSend));
 		ret = NETDVR_SUCCESS;

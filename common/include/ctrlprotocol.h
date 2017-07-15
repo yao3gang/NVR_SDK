@@ -3,6 +3,7 @@
 
 #include "iflytype.h"
 #include "camera.h"
+#include <time.h>
 
 #ifdef WIN32
 #include <winsock2.h>
@@ -288,6 +289,19 @@ extern "C" {
 #define MEDIA_LINKMAX_SVR			(VIDEO_CHANNELS+AUDIO_CHANNELS)*(EACH_STREAM_TCP_LINKS)+MAX_REMOTE_PLAYER_NUM+VOIP_NUM
 #define	STREAM_LINK_MAXNUM		MEDIA_LINKMAX_SVR+DOWNLOAD_NUM+UPDATE_NUM
 
+
+#ifdef WIN32
+typedef HANDLE MutexHandle;
+typedef HANDLE SemHandle;
+#else
+typedef pthread_mutex_t MutexHandle;
+typedef sem_t SemHandle;
+#define INVALID_SOCKET	(-1)
+#define SOCKET_ERROR	(-1)
+#include <netinet/tcp.h>
+#endif
+
+
 #pragma pack( push, 1 )
 
 typedef struct
@@ -304,6 +318,9 @@ typedef struct
 	u8			conntype;
 	u8          newmsgcome;
 	u8          nolnkcount;
+	//yaogang modify for server heart beat check
+	MutexHandle hMutex;
+	time_t last_msg_time;//上次通信时间，命令或心跳回应都可以
 }ifly_cp_t,*CPHandle;
 
 typedef struct
