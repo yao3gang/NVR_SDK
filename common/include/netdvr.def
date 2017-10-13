@@ -288,6 +288,8 @@ EXPORTS
 	NETDVR_CleanDesktopAlarmIcon		@200
 	NETDVR_CLOSE_GUIDE					@201
 	NETDVR_GetIPCChnLinkStatus			@202
+	NETDVR_GetChnName					@203
+	NETDVR_SetChnName					@204
 
 	
 	

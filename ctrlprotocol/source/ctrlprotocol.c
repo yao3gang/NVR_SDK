@@ -22,7 +22,7 @@ struct TCP_KEEPALIVE{
 // #endif
 
 //yaogang modify for server heart beat check
-#define HEART_BEAT_INTERVAL (1*60) //10min 
+#define HEART_BEAT_INTERVAL (10*60) //10min 
 
 static BOOL SockClose(SOCKHANDLE hSock)
 {
@@ -723,7 +723,7 @@ void *CPTaskProc(void *pParam)
 				continue;
 			}
 			
-			if (abs(cur_time_s - last_msg_time_s) > HEART_BEAT_INTERVAL+3*60)// 15 min
+			if (abs(cur_time_s - last_msg_time_s) > HEART_BEAT_INTERVAL+5*60)// 15 min
 			{
 				printf("server %s connect lost\n", inet_ntoa(in));
 				if(pfuncMsgCB != NULL)
@@ -837,6 +837,12 @@ void *CPTaskProc(void *pParam)
 						//MessageBox(NULL, "CONTINUE 2", NULL,MB_OK);
 						continue;
 					}
+
+					//printf("yg CPTaskProc recv: \n");
+					//printf("\ttype: %d\n", cprcvhead.type);
+					//printf("\tevent: %d\n", cprcvhead.event);
+					//printf("\tlength: %d\n", cprcvhead.length);
+					
 					if(cprcvhead.type == CTRL_ACK)
 					{
 						if(cprcvhead.number == g_wSyncNumber)

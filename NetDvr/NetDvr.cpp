@@ -2350,6 +2350,7 @@ int __stdcall NETDVR_getAddIPCList(int Handle,NETDVR_ipcSeachCondition *ipcS,NET
 	char buf[4096]={0};
 	int ret = NETDVR_SUCCESS;
 	ifly_search_desc_t req_desc, ret_desc;
+	struct in_addr in;
 	
 	p = (struct NETDVR_INNER_t *)(Handle); 
 	if (!p)
@@ -2388,8 +2389,8 @@ int __stdcall NETDVR_getAddIPCList(int Handle,NETDVR_ipcSeachCondition *ipcS,NET
 			ret_desc.endID = ntohs(ret_desc.endID);
 			ret_desc.sum = ntohs(ret_desc.sum);
 
-			//printf("ret sum: %d, startID: %d, endID: %d\n", \
-						//ret_desc.sum, ret_desc.startID, ret_desc.endID);
+			printf("ret sum: %d, startID: %d, endID: %d\n", 
+						ret_desc.sum, ret_desc.startID, ret_desc.endID);
 
 			pipc_info = (ifly_search_ipc *)(buf + sizeof(ifly_cp_header_t) + sizeof(ifly_search_desc_t));			
 			for (i=ret_desc.startID-1; i<ret_desc.endID; ++i, ++pipc_info)
@@ -2428,7 +2429,10 @@ int __stdcall NETDVR_getAddIPCList(int Handle,NETDVR_ipcSeachCondition *ipcS,NET
 				ptmp->pnext = NULL;
 
 				*ppipc = ptmp;
-				ppipc = &(ptmp->pnext);				
+				ppipc = &(ptmp->pnext);
+
+				in.s_addr = ptmp->dwIp;
+				printf("ipc ip: %s\n", inet_ntoa(in));
 			}
 			
 			
@@ -3280,6 +3284,106 @@ int __stdcall NETDVR_getVideoParams(int Handle, unsigned char chn, struct NETDVR
 		p_para->timepos_x = ntohs(para_info.timepos_x);
 		p_para->timepos_y = ntohs(para_info.timepos_y);
 
+	}
+	
+	return ret;
+}
+//yaogang modify 20170715 简易设置通道名的接口
+int __stdcall NETDVR_SetChnName(int Handle, unsigned char chn, const char *pname, int len)
+{
+	int ret;
+	char buf[1024] = {0};
+	struct NETDVR_INNER_t *p;
+	ifly_ImgParam_t para_info;
+	memset(&para_info, 0, sizeof(ifly_ImgParam_t));
+	
+	p = (struct NETDVR_INNER_t *)(Handle);
+	if (!p)
+	{
+		return NETDVR_ERR_NOINIT;
+	}
+	
+	if (!p->b_login)
+	{
+		return NETDVR_ERR_NOLOGIN;
+	}
+
+	if (chn >= p->si.maxChnNum)
+	{
+		return NETDVR_ERR_PARAM;
+	}
+
+	if (!pname)
+	{
+		return NETDVR_ERR_PARAM;
+	}
+	
+	if (len <= 0 || len+1 > sizeof(para_info.channelname))
+	{
+		return NETDVR_ERR_PARAM;
+	}
+	
+	para_info.channel_no = chn;
+	memcpy(para_info.channelname, pname, len+1);	
+	
+	if (!p->b_cmdConnectLost)
+	{
+		ret = send_command(p->cph, CTRL_CMD_SET_CHN_NAME, &para_info, sizeof(ifly_ImgParam_t), buf,sizeof(buf), g_connect_timeout/*CTRL_PROTOCOL_CONNECT_DEFAULT*/);
+	} 
+	else
+	{
+		ret = NETDVR_ERR_SEND;
+	}	
+	
+	return ret;
+}
+int __stdcall NETDVR_GetChnName(int Handle, unsigned char chn, char *pname, int size)
+{
+	int ret;
+	struct NETDVR_INNER_t *p;
+	char buf[1024] = {0};
+	ifly_ImgParam_t para_info;
+	memset(&para_info,0,sizeof(ifly_ImgParam_t));
+
+	p = (struct NETDVR_INNER_t *)(Handle);
+	if (!p)
+	{
+		return NETDVR_ERR_NOINIT;
+	}
+	
+	if (!p->b_login)
+	{
+		return NETDVR_ERR_NOLOGIN;
+	}
+	
+	if (chn >= p->si.maxChnNum)
+	{
+		return NETDVR_ERR_PARAM;
+	}
+	
+	if (!pname)
+	{
+		return NETDVR_ERR_PARAM;
+	}	
+
+	if (!p->b_cmdConnectLost)
+	{
+		ret = send_command(p->cph, CTRL_CMD_GET_CHN_NAME, &chn, sizeof(chn), buf, sizeof(buf), g_connect_timeout/*CTRL_PROTOCOL_CONNECT_DEFAULT*/ );
+	} 
+	else
+	{
+		ret = NETDVR_ERR_SEND;
+	}
+	
+	if(NETDVR_SUCCESS == ret)
+	{
+		memcpy(&para_info,buf+sizeof(ifly_cp_header_t),sizeof(para_info));
+
+		if (size < sizeof(para_info.channelname))
+		{
+			return NETDVR_ERR_PARAM;
+		}
+		strcpy(pname, para_info.channelname);
 	}
 	
 	return ret;

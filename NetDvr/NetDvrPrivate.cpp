@@ -2626,7 +2626,8 @@ void DealNotify(CPHandle svrcph, u16 event, u8 *pbyMsgBuf, int msgLen, u8 *pbyAc
 			{
 				get_notify_dvr(svrcph, &p);
 				memcpy(&alarmstate,pbyMsgBuf,sizeof(ifly_alarmstate_t));
-				printf("DealNotify sizeof(ifly_alarmstate_t): %d\n", sizeof(ifly_alarmstate_t));
+				//printf("DealNotify alarm type: %d, id: %d, state: %d\n",
+				//	alarmstate.type, alarmstate.id, alarmstate.state);
 				if (p)
 				{
 					p->alarmstate.type		= alarmstate.type;

@@ -1877,6 +1877,11 @@ NETDVR_getVideoParams : get video parameters
 int __stdcall NETDVR_setVideoParams(int Handle, const struct NETDVR_videoParam_t *p_para);
 int __stdcall NETDVR_getVideoParams(int Handle, unsigned char chn, struct NETDVR_videoParam_t *p_para);
 
+//yaogang modify 20170715 简易设置通道名的接口
+int __stdcall NETDVR_SetChnName(int Handle, unsigned char chn, const char *pname, int len);
+int __stdcall NETDVR_GetChnName(int Handle, unsigned char chn, char *pname, int size);
+
+
 /*
 NETDVR_setRecordParams : set record parameters
 NETDVR_getRecordParams : get record parameters
