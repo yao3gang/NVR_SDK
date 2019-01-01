@@ -607,7 +607,7 @@ typedef struct
 typedef struct
 {
 	u8		channel_no;					//通道号
-	char	channelname[32];			//通道名
+	char	channelname[128];//32		//通道名yaogang modify 20171121 保存长的通道名
 	u8		flag_name;					//名称位置显示
 	u16		chnpos_x;					//名称x坐标
 	u16		chnpos_y;					//名称y坐标

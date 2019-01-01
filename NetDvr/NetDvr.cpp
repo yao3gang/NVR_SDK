@@ -226,7 +226,7 @@ int __stdcall NETDVR_startup(void)
 		return NETDVR_SUCCESS;
 	}
 	//yaogang modify 201401028
-#if 1
+#if 0
 	AllocConsole();
 	int nRet = _open_osfhandle((long)GetStdHandle(STD_OUTPUT_HANDLE), _O_TEXT);
 	FILE* fp = _fdopen(nRet, "w");
@@ -3344,6 +3344,7 @@ int __stdcall NETDVR_GetChnName(int Handle, unsigned char chn, char *pname, int 
 	char buf[1024] = {0};
 	ifly_ImgParam_t para_info;
 	memset(&para_info,0,sizeof(ifly_ImgParam_t));
+	int str_len = 0;
 
 	p = (struct NETDVR_INNER_t *)(Handle);
 	if (!p)
@@ -3377,13 +3378,14 @@ int __stdcall NETDVR_GetChnName(int Handle, unsigned char chn, char *pname, int 
 	
 	if(NETDVR_SUCCESS == ret)
 	{
-		memcpy(&para_info,buf+sizeof(ifly_cp_header_t),sizeof(para_info));
-
-		if (size < sizeof(para_info.channelname))
-		{
-			return NETDVR_ERR_PARAM;
-		}
-		strcpy(pname, para_info.channelname);
+		memcpy(&para_info, buf+sizeof(ifly_cp_header_t), sizeof(para_info));
+		
+		str_len = min(size, sizeof(para_info.channelname));
+		//printf("NETDVR_GetChnName chn: %d, pname size: %d, recv len: %d, str_len: %d\n", 
+			//chn, size, strlen(para_info.channelname), str_len);
+		
+		strncpy(pname, para_info.channelname, str_len-1);
+		pname[str_len-1] = 0;//null-terminated
 	}
 	
 	return ret;

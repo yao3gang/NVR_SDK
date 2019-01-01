@@ -1879,7 +1879,7 @@ int __stdcall NETDVR_getVideoParams(int Handle, unsigned char chn, struct NETDVR
 
 //yaogang modify 20170715 简易设置通道名的接口
 int __stdcall NETDVR_SetChnName(int Handle, unsigned char chn, const char *pname, int len);
-int __stdcall NETDVR_GetChnName(int Handle, unsigned char chn, char *pname, int size);
+int __stdcall NETDVR_GetChnName(int Handle, unsigned char chn, char *pname, int size);//size >= 128
 
 
 /*
